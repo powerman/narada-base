@@ -1,4 +1,4 @@
-narada-base
+Narada base
 ===========
 
 This repo contains base files used to initialize new Narada projects.
