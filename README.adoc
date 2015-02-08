@@ -7,7 +7,9 @@ There are different sets of files available in different branches:
 
 master:: base files suitable for most projects
 
-socklog:: base files plus runit and socklog plugins
+socklog:: base files plus
+https://github.com/powerman/narada-plugin-runit[runit] and
+https://github.com/powerman/narada-plugin-socklog[socklog] plugins
 
 doc:: (this branch) doesn't contain base files for narada, only
 documentation about this repo
