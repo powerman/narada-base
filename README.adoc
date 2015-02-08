@@ -1,7 +1,8 @@
 Narada base
 ===========
 
-This repo contains base files used to initialize new Narada projects.
+This repo contains base files used to initialize new
+https://github.com/powerman/Narada[Narada] projects.
 
 There are different sets of files available in different branches:
 
