@@ -23,7 +23,7 @@ consists of simple scripts (for example, in Perl) while doesn't need to be
 compiled or generated.
 
 Also you may need to change commands used to run build-time tests if your
-project doesn't use http://testanything.org/[TAP] tests in `t/**/.t`
+project doesn't use http://testanything.org/[TAP] tests in `t/**/*.t`
 files.
 
 === ./release
@@ -31,16 +31,19 @@ files.
 You usually should edit it to add commands needed to release your project.
 
 Default implementation release patch file with differences since previous
-version for all files in your project repo, except these:
+tagged version (usually released using `narada-release`) for all files in
+your project repo, except these:
 
-- `.gitignore`
-- `build`
-- `release`
-- `deploy`
-- `install.narada`
+----
+.gitignore
+build
+release
+deploy
+install.narada
+----
 
-This is suitable only for project which should deploy it source code (for
-example, if it implemented using Perl scripts).
+This is suitable only for projects which should deploy their source code
+(for example, projects implemented using Perl scripts).
 
 === ./deploy
 
@@ -51,7 +54,7 @@ and suitable only for local testing while development.
 
 === install.narada
 
-You usually shouldn't edit it, only append operations needed to migrate
+You usually shouldn't modify it, only append operations needed to migrate
 (upgrade and downgrade) between different versions of your project.
 
 But you usually should change some files created by these operations in
@@ -60,23 +63,24 @@ deploy in different ways for different (devel, testing, production, etc.)
 deploy directories, or automatically in same way for different deploy
 directories by appending (or changing) migrate operations:
 
-- `config/mysql/`: you may remove it if your project doesn't use MySQL
-- `var/mysql/`: you may remove it if your project doesn't use MySQL
-- `var/qmail/`: you may remove it if your project doesn't use `~/.qmail*`
-  to handle incoming emails
+- `config/mysql/`: you may like to remove it if your project doesn't use
+  MySQL
+- `var/mysql/`: you may like to remove it if your project doesn't use
+  MySQL
+- `var/qmail/`: you may like to remove it if your project doesn't use
+  `~/.qmail*` to handle incoming emails
 - `config/crontab/backup`:
-  * make sure is default backup schedule (daily incremental backups, new
+  * make sure default backup schedule (daily incremental backups, new
     full backup every week) is suitable for you or change it
   * replace `echo Reminder: ...` with real command used to (recommended)
-    encrypt and upload your backup somewhere, for example:
+    encrypt or compress and upload your backup somewhere, for example:
 +
 [source,sh]
 ----
-narada-backup &&
-rm -f var/backup/full.tar.gpg &&
-gpg --s2k-count 1000000 --batch --cipher-algo AES256 -c \
+narada-backup && rm -f var/backup/full.tar.gpg && gpg --s2k-count 1000000
+--batch --cipher-algo AES256 -c \
     --passphrase-file config/backup/pass var/backup/full.tar &&
-scp var/backup/full.tar.gpg USER@HOST:PATH/`date +"%Y%m%d-%H%M%S"`.full.gpg
+scp var/backup/full.tar.gpg USER@HOST:PATH/`date
++"%Y%m%d-%H%M%S"`.full.gpg
 ----
-
 
