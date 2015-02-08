@@ -77,10 +77,10 @@ directories by appending (or changing) migrate operations:
 +
 [source,sh]
 ----
-narada-backup && rm -f var/backup/full.tar.gpg && gpg --s2k-count 1000000
---batch --cipher-algo AES256 -c \
+narada-backup &&
+rm -f var/backup/full.tar.gpg &&
+gpg --s2k-count 1000000 --batch --cipher-algo AES256 -c \
     --passphrase-file config/backup/pass var/backup/full.tar &&
-scp var/backup/full.tar.gpg USER@HOST:PATH/`date
-+"%Y%m%d-%H%M%S"`.full.gpg
+scp var/backup/full.tar.gpg USER@HOST:PATH/`date +"%Y%m%d-%H%M%S"`.full.gpg
 ----
 
