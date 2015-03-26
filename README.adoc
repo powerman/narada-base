@@ -69,26 +69,24 @@ You usually should edit it to set commands needed to deploy your project.
 Default implementation will deploy your project into `_live/` subdirectory
 and suitable only for local testing while development.
 
-Also you may need to change commands used to run build-time tests if your
-project doesn't use http://testanything.org/[TAP]-compatible tests in
+Also you may need to change commands used to run tests after deploy if
+your project doesn't use http://testanything.org/[TAP]-compatible tests in
 `t/**/*.t` files.
 
 === migrate
 
 Before you'll `./release` first version you can edit it to change files
 which will be created in directory where you deploy your project by first
-release (but this isn't required, you always can change them later in next
+release (this isn't required, you always can change them later in next
 releases). Here is some changes you may like to do:
 
-- `config/mysql/`: you may like to remove it if your project doesn't use
-  MySQL
-- `var/mysql/`: you may like to remove it if your project doesn't use
-  MySQL
+- `config/mysql/` and `var/mysql/`: you may like to remove it if your
+  project doesn't use MySQL
 - `var/qmail/`: you may like to remove it if your project doesn't use
   `~/.qmail*` to handle incoming emails
 - `config/crontab/backup`:
-  * make sure default backup schedule (daily incremental backups, new
-    full backup every week) is suitable for you or change it
+  * make sure default backup schedule (daily incremental backups, new full
+    backup every week) is suitable for you or change it
   * replace `echo Reminder: ...` with real command used to (recommended)
     encrypt or compress and upload your backup somewhere, for example:
 +
@@ -118,12 +116,12 @@ you'll have to add manually, like:
 - restart background processes/services affected by these changes
 
 You can run `./build` or `./build --test` at any time just to make sure
-you project builds ok and pass build-time tests.
+your project builds ok and pass build-time tests.
 
 You can run `./release && ./deploy` at any time (even when you've not
 committed yet changes in work directory) to release and deploy into
-`_live/` current project to check how it works before committing current
-changes into repository.
+`_live/` current project to check how it works before committing changes
+into repository.
 
 When you're ready to release current HEAD and tag it as new version you
 should run `./release --major|--minor|--patch|<version>`.
