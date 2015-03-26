@@ -10,9 +10,11 @@ master:: base files suitable for most projects
 
 socklog:: base files plus
 https://github.com/powerman/narada-plugin-runit[runit] and
-https://github.com/powerman/narada-plugin-socklog[socklog] plugins
+https://github.com/powerman/narada-plugin-socklog[socklog] plugins,
+for projects which needs to run background services (like fastcgi,
+php-fpm, etc.) and able to use http://smarden.org/runit/[runit]
 
-doc:: (this branch) doesn't contain base files for narada, only
+doc:: (this branch) doesn't contain base files for Narada, only
 documentation about this repo
 
 
@@ -38,8 +40,8 @@ which consists of simple scripts (for example, in Perl) while doesn't need
 to be compiled or generated.
 
 Also you may need to change commands used to run build-time tests if your
-project doesn't use http://testanything.org/[TAP] tests in `t/**/*.t`
-files.
+project doesn't use http://testanything.org/[TAP]-compatible tests in
+`t/**/*.t` files.
 
 === ./release
 
@@ -68,14 +70,10 @@ and suitable only for local testing while development.
 
 === migrate
 
-You usually shouldn't *modify* it, only *append* operations needed to migrate
-(upgrade and downgrade) between current and next versions of your project.
-
-But you usually should change some files created by these operations in
-directory where you deployed your project - either manually on initial
-deploy in different ways for different (devel, testing, production, etc.)
-deploy locations, or automatically in same way for different deploy
-directories by appending (or changing) migrate operations:
+Before you'll `./release` first version you can edit it to change files
+which will be created in directory where you deploy your project by first
+release (but this isn't required, you always can change them later in next
+releases). Here is some changes you may like to do:
 
 - `config/mysql/`: you may like to remove it if your project doesn't use
   MySQL
@@ -100,5 +98,42 @@ scp var/backup/full.tar.gpg USER@HOST:PATH/`date +"%Y%m%d-%H%M%S"`.full.gpg
 
 
 == Usage
+
+While developing new version of your project you should add any extra
+upgrade/downgrade operations needed to migrate between previous and new
+versions into `migrate` file. Default operations like copying binary files
+or patching text files will be automatically added into `migrate` when
+you'll run `./release`, but there are may be some extra operations which
+you'll have to add manually, like:
+
+- create/modify/remove config/data files or directories in project's
+  deploy directory
+- change database scheme
+- convert data in database
+- restart background processes/services affected by these changes
+
+You can run `./build` or `./build --test` at any time just to make sure
+you project builds ok and pass build-time tests.
+
+You can run `./release && ./deploy` at any time (even when you've not
+committed yet changes in work directory) to release and deploy into
+`_live/` current project to check how it works before committing current
+changes into repository.
+
+When you're ready to release current HEAD and tag it as new version you
+should run `./release --major|--minor|--patch|<version>`.
+
+To deploy one of already released versions into `_live/` you can run
+`./deploy <version>`.
+
+To deploy some version on remote server copy `.release/*` files related to
+that version into `.release/` subdirectory of project's deploy directory
+on server and then run `narada-install <version>` in project's deploy
+directory on server.
+
+If you'll add TAP-compatible tests into `t/build/` then they'll be
+automatically executed by `./build --test` in work directory. If you'll
+add TAP-compatible tests into `t/devel/` then they'll be automatically
+executed by `./deploy` in deploy (`_live/`) directory.
 
 
