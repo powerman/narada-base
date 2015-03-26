@@ -35,9 +35,9 @@ narada-new -b socklog [directory]
 You usually should edit it to set commands used to build and test your
 project.
 
-Default build implementation does nothing and suitable only for projects
-which consists of simple scripts (for example, in Perl) while doesn't need
-to be compiled or generated.
+Default implementation does nothing and suitable only for projects
+developed using scripting languages (like Perl) which doesn't need to
+compile or generate code.
 
 Also you may need to change commands used to run build-time tests if your
 project doesn't use http://testanything.org/[TAP]-compatible tests in
@@ -47,8 +47,9 @@ project doesn't use http://testanything.org/[TAP]-compatible tests in
 
 You usually should edit it to set commands needed to release your project.
 
-Default implementation release patch file with differences since previous
-released version for all files in your project repo, except these:
+Default implementation will generate patch file with differences since
+previous released version for all files in your project repo, except
+these:
 
 ----
 .gitignore
@@ -67,6 +68,10 @@ You usually should edit it to set commands needed to deploy your project.
 
 Default implementation will deploy your project into `_live/` subdirectory
 and suitable only for local testing while development.
+
+Also you may need to change commands used to run build-time tests if your
+project doesn't use http://testanything.org/[TAP]-compatible tests in
+`t/**/*.t` files.
 
 === migrate
 
