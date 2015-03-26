@@ -15,15 +15,27 @@ https://github.com/powerman/narada-plugin-socklog[socklog] plugins
 doc:: (this branch) doesn't contain base files for narada, only
 documentation about this repo
 
-== Base files
+
+== Install
+
+This is default repository for Narada, so you can create new Narada
+project using one of these commands:
+
+[source,sh]
+narada-new [directory]
+narada-new -b socklog [directory]
+
+
+== Setup
 
 === ./build
 
-You usually should edit it to add commands needed to build your project.
+You usually should edit it to set commands used to build and test your
+project.
 
-Default implementation does nothing and suitable only for projects which
-consists of simple scripts (for example, in Perl) while doesn't need to be
-compiled or generated.
+Default build implementation does nothing and suitable only for projects
+which consists of simple scripts (for example, in Perl) while doesn't need
+to be compiled or generated.
 
 Also you may need to change commands used to run build-time tests if your
 project doesn't use http://testanything.org/[TAP] tests in `t/**/*.t`
@@ -31,18 +43,17 @@ files.
 
 === ./release
 
-You usually should edit it to add commands needed to release your project.
+You usually should edit it to set commands needed to release your project.
 
 Default implementation release patch file with differences since previous
-tagged version (usually released using `narada-release`) for all files in
-your project repo, except these:
+released version for all files in your project repo, except these:
 
 ----
 .gitignore
 build
 release
 deploy
-install.narada
+migrate
 ----
 
 This is suitable only for projects which should deploy their source code
@@ -50,20 +61,20 @@ This is suitable only for projects which should deploy their source code
 
 === ./deploy
 
-You usually should edit it to add commands needed to release your project.
+You usually should edit it to set commands needed to deploy your project.
 
 Default implementation will deploy your project into `_live/` subdirectory
 and suitable only for local testing while development.
 
-=== install.narada
+=== migrate
 
-You usually shouldn't modify it, only append operations needed to migrate
-(upgrade and downgrade) between different versions of your project.
+You usually shouldn't *modify* it, only *append* operations needed to migrate
+(upgrade and downgrade) between current and next versions of your project.
 
 But you usually should change some files created by these operations in
 directory where you deployed your project - either manually on initial
 deploy in different ways for different (devel, testing, production, etc.)
-deploy directories, or automatically in same way for different deploy
+deploy locations, or automatically in same way for different deploy
 directories by appending (or changing) migrate operations:
 
 - `config/mysql/`: you may like to remove it if your project doesn't use
@@ -86,4 +97,8 @@ gpg --s2k-count 1000000 --batch --cipher-algo AES256 -c \
     --passphrase-file config/backup/pass var/backup/full.tar &&
 scp var/backup/full.tar.gpg USER@HOST:PATH/`date +"%Y%m%d-%H%M%S"`.full.gpg
 ----
+
+
+== Usage
+
 
