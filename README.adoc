@@ -82,8 +82,8 @@ releases). Here is some changes you may like to do:
 
 - `config/mysql/` and `var/mysql/`: you may like to remove it if your
   project doesn't use MySQL
-- `var/qmail/`: you may like to remove it if your project doesn't use
-  `~/.qmail*` to handle incoming emails
+- `config/qmail/` and `var/qmail/`: you may like to remove it if your
+  project doesn't use `~/.qmail*` to handle incoming emails
 - `config/crontab/backup`:
   * make sure default backup schedule (daily incremental backups, new full
     backup every week) is suitable for you or change it
