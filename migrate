@@ -1,0 +1,8 @@
+### narada-plugin-socklog
+
+set_config log/type     syslog
+set_config log/output   var/log.sock
+
+restart log
+
+
