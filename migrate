@@ -230,3 +230,17 @@ add_config mysql/dump/ignore
 add_config mysql/dump/incremental
 
 
+### narada-plugin-runit
+
+# restart service_to_restart
+DEFINE2 restart
+upgrade
+  sv t ./service/"$1" || :
+after_downgrade
+  sv t ./service/"$1" || :
+
+add_config service/type runit
+add_config crontab/service -
+  */1  * * * *    narada-start-services &
+
+
