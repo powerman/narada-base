@@ -1,0 +1,89 @@
+#!/bin/bash
+
+warn()	{ echo "$@" >&2;	}
+die()	{ warn "$@"; exit 1;	}
+
+main() {
+	if test $# -gt 1 -o "$1" = '-h' -o "$1" = '--help'; then
+		die 'Usage: ./release [-h|--help|--major|--minor|--patch|<version>]'
+	fi
+
+	./build --test || die 'Please fix the build first, then try again'
+
+	if test $# -eq 1; then
+		workdir_is_clean || die 'Please commit all changes first, then try again'
+		local version="$(get_version "$1")"             || die 'Failed'
+		if release_version "$version" migrate; then
+			git add migrate                         || die 'Failed'
+			git commit -m "Release $version"        || die 'Failed'
+		fi
+		git tag -a -m "$version" "$version"             || die 'Failed'
+		./build                                         || die 'Failed'
+	fi
+
+	release_project
+	release_migrate
+}
+
+release_project() {
+	#... PUT RELEASE INSTRUCTION FOR YOUR PROJECT FILES HERE ...
+	local prev_version
+	if list_versions | grep -q -x -F -f VERSION; then
+		prev_version=$(list_versions | grep -B 1 -x -F -f VERSION | head -n 1)
+	else
+		prev_version=$(list_versions | tail -n 1)
+	fi
+	mkdir -p .release/
+	git diff --binary "$prev_version" | perl -0777 -pe '
+		my $skip = qr{\.gitignore|build|release|deploy|migrate|(.*/)?\.release/.*}ms;
+		s{^diff --git a/($skip) b/\1\n(?:(?!diff)[^\n]*\n)*}{}msg;
+		' > .release/$(< VERSION).patch
+	test -s .release/$(< VERSION).patch || rm .release/$(< VERSION).patch
+}
+
+release_migrate() {
+	local version="$(< VERSION)"
+	local migrate=".release/${version}.migrate"
+	cp migrate "$migrate"
+	list_versions | grep -q -x -F -f VERSION || release_version "$version" "$migrate"
+}
+
+release_version() {
+	list_versions "$2" | grep -q -x -F "$1" && return 0
+	echo -ne "\nINSTALL $1\nVERSION $1\n\n" >> "$2"
+}
+
+list_versions() {
+	grep '^VERSION' ${1:-migrate} | sed 's/^VERSION\s\+\(\S\+\)\s*$/\1/'
+}
+
+workdir_is_clean() {
+	git update-index -q --refresh --unmerged >/dev/null
+	git diff-index --quiet HEAD
+}
+
+get_version() {
+	local new cur re
+	if test "$1" != '--major' -a "$1" != '--minor' -a "$1" != '--patch'; then
+		new="$1"
+	else
+		cur=$(list_versions | tail -n 1)
+		re='/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/'
+		if test "$1" = '--major'; then
+			new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",1+$1,0,0   if '$re)
+		elif test "$1" = '--minor'; then
+			new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",$1,1+$2,0  if '$re)
+		else
+			new=$(echo "$cur" | perl -ne 'printf "%d.%d.%d\n",$1,$2,1+$3 if '$re)
+		fi
+		test -n "$new" || die "Unable to increment ${1:2} number in version '$cur'"
+	fi
+	echo "$new" | grep -q '^[0-9A-Za-z.+-]\+$'   || die "Bad version '$new'"
+	git check-ref-format --allow-onelevel "$new" || die "Bad version '$new'"
+	git tags | grep -q -x -F "$new" && die "Version '$new' already exists"
+	echo "$new"
+}
+
+
+main "$@"
+

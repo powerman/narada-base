@@ -1,0 +1,125 @@
+Narada base
+===========
+
+This project was created using https://github.com/powerman/narada-base
+(template for new projects designed for Narada framework).
+
+This document describe how to use files provided by this template.
+
+
+== Setup
+
+=== ./build
+
+You usually should edit it to set commands used to build and test your
+project.
+
+Default implementation does nothing and suitable only for projects
+developed using scripting languages (like Perl) which doesn't need to
+compile or generate code.
+
+Also you may need to change commands used to run build-time tests if your
+project doesn't use http://testanything.org/[TAP]-compatible tests in
+`t/**/*.t` files.
+
+=== ./release
+
+You usually should edit it to set commands needed to release your project.
+
+Default implementation will generate patch file with differences since
+previous released version for all files in your project repo, except
+these:
+
+----
+.gitignore
+build
+release
+deploy
+migrate
+----
+
+This is suitable only for projects which should deploy their source code
+(for example, projects implemented using Perl scripts).
+
+Generated files will be saved into `.release/` subdirectory. You can
+remove files you don't need anymore. You can re-generate files for any
+commit by running `git checkout <commit>; ./release`.
+
+=== ./deploy
+
+You usually should edit it to set commands needed to deploy your project.
+
+Default implementation will deploy your project into `_live/` subdirectory
+and suitable only for local testing while development.
+
+Also you may need to change commands used to run tests after deploy if
+your project doesn't use http://testanything.org/[TAP]-compatible tests in
+`t/**/*.t` files.
+
+=== migrate
+
+Before you'll `./release` first version you can edit it to change files
+which will be created in directory where you deploy your project by first
+release (this isn't required, you always can change them later in next
+releases). Here is some changes you may like to do:
+
+- `config/mysql/` and `var/mysql/`: you may like to remove it if your
+  project doesn't use MySQL
+- `config/qmail/` and `var/qmail/`: you may like to remove it if your
+  project doesn't use `~/.qmail*` to handle incoming emails
+- `config/crontab/backup`:
+  * make sure default backup schedule (daily incremental backups, new full
+    backup every week) is suitable for you or change it
+  * replace `echo Reminder: ...` with real command used to (recommended)
+    encrypt or compress and upload your backup somewhere, for example:
++
+[source,sh]
+----
+narada-backup &&
+rm -f var/backup/full.tar.gpg &&
+gpg --s2k-count 1000000 --batch --cipher-algo AES256 -c \
+    --passphrase-file config/backup/pass var/backup/full.tar &&
+scp var/backup/full.tar.gpg USER@HOST:PATH/`date +"%Y%m%d-%H%M%S"`.full.gpg
+----
+
+
+== Usage
+
+While developing new version of your project you should add any extra
+upgrade/downgrade operations needed to migrate between previous and new
+versions into `migrate` file. Default operations like copying binary files
+or patching text files will be automatically added into `migrate` when
+you'll run `./release`, but there are may be some extra operations which
+you'll have to add manually, like:
+
+- create/modify/remove config/data files or directories in project's
+  deploy directory
+- change database scheme
+- convert data in database
+- restart background processes/services affected by these changes
+
+You can run `./build` or `./build --test` at any time just to make sure
+your project builds ok and pass build-time tests.
+
+You can run `./release && ./deploy` at any time (even when you've not
+committed yet changes in work directory) to release and deploy into
+`_live/` current project to check how it works before committing changes
+into repository.
+
+When you're ready to release current HEAD and tag it as new version you
+should run `./release --major|--minor|--patch|<version>`.
+
+To deploy one of already released versions into `_live/` you can run
+`./deploy <version>`.
+
+To deploy some version on remote server copy `.release/*` files related to
+that version into `.release/` subdirectory of project's deploy directory
+on server and then run `narada-install <version>` in project's deploy
+directory on server.
+
+If you'll add TAP-compatible tests into `t/build/` then they'll be
+automatically executed by `./build --test` in work directory. If you'll
+add TAP-compatible tests into `t/devel/` then they'll be automatically
+executed by `./deploy` in deploy (`_live/`) directory.
+
+

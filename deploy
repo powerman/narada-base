@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VERSION=${1:-$(< VERSION)}
+
+#... PUT DEPLOY INSTRUCTION FOR YOUR PROJECT HERE ...
+mkdir -p _live/.release/ &&
+cp .release/"$VERSION".* _live/.release/ &&
+cd _live &&
+narada-install --allow-downgrade --allow-restore "$VERSION" &&
+( test ! -d t/devel || prove -r t/devel/ )
+
