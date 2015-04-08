@@ -28,11 +28,9 @@ narada-new [directory]
 narada-new -b socklog [directory]
 
 
-== Usage
+== Documentation
 
-You can find documentation about how to setup and use files and scripts
-provided by this template in file
-https://github.com/powerman/narada-base/blob/master/doc/narada-base.adoc[doc/narada-base.adoc]
-in your project directory.
+Documentation is in your project's directory, see
+https://github.com/powerman/narada-base/blob/master/doc/narada-base.adoc[doc/narada-base.adoc].
 
 
