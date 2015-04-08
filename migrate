@@ -211,8 +211,8 @@ add_config crontab/backup -
   1 2 * * 1   rm .backup/full.tar >/dev/null 2>&1
 
 add_config log/level    DEBUG
-add_config log/type     file
-add_config log/output   var/log/default.log
+add_config log/type     syslog
+add_config log/output   var/log.sock
 
 
 # OPTIONAL Narada files & directories:
@@ -242,5 +242,10 @@ after_downgrade
 add_config service/type runit
 add_config crontab/service -
   */1  * * * *    narada-start-services &
+
+
+### narada-plugin-socklog
+
+restart log
 
 
