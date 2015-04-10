@@ -24,7 +24,7 @@ main() {
 			git add ".release/${version}".*         || die 'Failed'
 			git commit -m "Release $version"        || die 'Failed'
 		fi
-		git tag -a -m "$version" "$version"             || die 'Failed'
+		git tag -a -m release "$version"                || die 'Failed'
 	fi
 }
 
