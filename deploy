@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+test "$1" = '-n' && shift || RUN_TESTS=1
+
 VERSION=${1:-$(< VERSION)}
 
 #... PUT DEPLOY INSTRUCTION FOR YOUR PROJECT HERE ...
@@ -7,5 +9,5 @@ mkdir -p _live/.release/ &&
 rsync -a .release/ _live/.release/ &&
 cd _live &&
 narada-install --allow-downgrade --allow-restore "$VERSION" &&
-( test ! -d t/devel || prove -r t/devel/ )
+( test -z "$RUN_TESTS" -o ! -d t/devel || prove -r t/devel/ )
 
