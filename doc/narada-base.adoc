@@ -9,7 +9,7 @@ This document describe how to use files provided by this template.
 
 == Setup
 
-=== ./build
+=== ./build [-h|--help] [-t|--test]
 
 You usually should edit it to set commands used to build and test your
 project.
@@ -22,7 +22,9 @@ Also you may need to change commands used to run build-time tests if your
 project doesn't use http://testanything.org/[TAP]-compatible tests in
 `t/**/*.t` files.
 
-=== ./release
+Run with `-t|--test` to enable build-time tests.
+
+=== ./release [-h|--help|-n|--major|--minor|--patch|<version>]
 
 You usually should edit it to set commands needed to release your project.
 
@@ -50,7 +52,9 @@ different compiler was used or build date was embedded in generated files
 or generated files was manually changed (this may happens in advanced
 cases when you join two branches of project).
 
-=== ./deploy
+Run with `-n` to disable build-time tests.
+
+=== ./deploy [-n] [<version>]
 
 You usually should edit it to set commands needed to deploy your project.
 
@@ -60,6 +64,8 @@ and suitable only for local testing while development.
 Also you may need to change commands used to run tests after deploy if
 your project doesn't use http://testanything.org/[TAP]-compatible tests in
 `t/**/*.t` files.
+
+Run with `-n` to disable deploy-time tests.
 
 === migrate
 

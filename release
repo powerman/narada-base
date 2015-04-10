@@ -5,10 +5,11 @@ die()	{ warn "$@"; exit 1;	}
 
 main() {
 	if test $# -gt 1 -o "$1" = '-h' -o "$1" = '--help'; then
-		die 'Usage: ./release [-h|--help|--major|--minor|--patch|<version>]'
+		die 'Usage: ./release [-h|--help|-n|--major|--minor|--patch|<version>]'
 	fi
 
-	./build --test || die 'Please fix the build first, then try again'
+	test $# -eq 1 -a "$1" = '-n' && shift || local test='--test'
+	./build $test   || die 'Please fix the build first, then try again'
 
 	if test $# -eq 0; then
 		release_project
@@ -24,7 +25,7 @@ main() {
 			git add ".release/${version}".*         || die 'Failed'
 			git commit -m "Release $version"        || die 'Failed'
 		fi
-		git tag -a -m "$version" "$version"             || die 'Failed'
+		git tag -a -m release "$version"                || die 'Failed'
 	fi
 }
 
