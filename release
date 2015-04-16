@@ -83,7 +83,7 @@ get_version() {
 	fi
 	echo "$new" | grep -q '^[0-9A-Za-z.+-]\+$'   || die "Bad version '$new'"
 	git check-ref-format --allow-onelevel "$new" || die "Bad version '$new'"
-	git tags | grep -q -x -F "$new" && die "Version '$new' already exists"
+	git tag -l | grep -q -x -F "$new" && die "Version '$new' already exists"
 	echo "$new"
 }
 
