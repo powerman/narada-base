@@ -28,6 +28,11 @@ narada-new [directory]
 narada-new -b socklog [directory]
 
 
+== Upgrade from Narada 1.x
+
+See https://github.com/powerman/narada-base/wiki#how-to-upgrade-narada-1x-project[wiki].
+
+
 == Documentation
 
 Documentation is in your project's directory, see
