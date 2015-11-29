@@ -24,5 +24,3 @@ sv(8), runsv(8) and runsvdir(8).
 
 You can see example of such service in
 https://github.com/powerman/narada-plugin-socklog/tree/master[narada-plugin-socklog].
-
-

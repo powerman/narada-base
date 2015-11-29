@@ -10,5 +10,3 @@ after_downgrade
 add_config service/type runit
 add_config crontab/service -
   */1  * * * *    narada-start-services &
-
-
