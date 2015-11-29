@@ -180,6 +180,18 @@ after_downgrade
   echo "$1" | grep -v -q '^crontab/' || narada-setup-cron
   echo "$1" | grep -v -q '^qmail/'   || narada-setup-qmail
 
+# exclude_from_backup "value"
+DEFINE2 exclude_from_backup
+upgrade
+  test -e config/backup/exclude
+  if ! grep -q -F -x -- "$1" config/backup/exclude; then
+    echo "$1" >> config/backup/exclude
+  fi
+after_downgrade
+  test -e config/backup/exclude
+  grep -v -F -x -- "$1" config/backup/exclude >tmp/config_backup_exclude.$$
+  mv tmp/config_backup_exclude.$$ config/backup/exclude
+
 # kill process_name ...
 # - make sure processes started before upgrade/downgrade but blocked on
 #   start because of lock won't continue to run after upgrade/downgrade
