@@ -1,0 +1,11 @@
+# VCS
+[.]gitignore
+
+# Narada
+(.*/)?[.]release/.*
+.releaseignore
+build
+release
+deploy
+migrate
+t/build/.*
