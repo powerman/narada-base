@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 warn()	{ echo "$@" >&2;	}
 die()	{ warn "$@"; exit 1;	}
 
@@ -8,7 +7,11 @@ main() {
 		die 'Usage: ./release [-h|--help|-n|--major|--minor|--patch|<version>]'
 	fi
 
-	test $# -eq 1 -a "$1" = '-n' && shift || local test='--test'
+	if test $# -eq 1 -a "$1" = '-n'; then
+		shift
+	else
+		local test='--test'
+	fi
 	./build $test   || die 'Please fix the build first, then try again'
 
 	if test $# -eq 0; then
@@ -26,6 +29,7 @@ main() {
 			git commit -m "Release $version"        || die 'Failed'
 		fi
 		git tag -a -m release "$version"                || die 'Failed'
+		# git push --follow-tags                          || die 'Failed'
 	fi
 }
 
@@ -37,10 +41,14 @@ release_project() {
 	else
 		prev_version=$(list_versions | tail -n 1)
 	fi
-	git diff --binary "$prev_version" | perl -0777 -pe '
-		my $skip = qr{\.gitignore|build|release|deploy|migrate|(.*/)?\.release/.*}ms;
-		s{^diff --git a/($skip) b/\1\n(?:(?!diff)[^\n]*\n)*}{}msg;
-		' > .release/$(< VERSION).patch
+	git diff --name-only --binary "$prev_version" |
+                perl -MPath::Tiny -ne '
+                BEGIN { $skip = join q{|}, map { s/\A\s+//; s/\s+\z//; qr/$_/ms }
+                                grep { !/\A\s*(?:#.*)?\z/ms } split "\n",
+                                path(".releaseignore")->slurp_utf8 }
+                chomp;
+                print "$_\0" if !/\A(?:$skip)\z/ms;
+                ' | xargs -0 -r git diff --binary "$prev_version" -- > .release/$(< VERSION).patch
 	test -s .release/$(< VERSION).patch || rm .release/$(< VERSION).patch
 }
 
@@ -53,7 +61,7 @@ release_migrate() {
 
 release_version() {
 	list_versions "$2" | grep -q -x -F "$1" && return 0
-	echo -ne "\nINSTALL $1\nVERSION $1\n\n" >> "$2"
+	echo -ne "\nINSTALL\nVERSION $1\n\n" >> "$2"
 }
 
 list_versions() {
@@ -89,4 +97,3 @@ get_version() {
 
 
 main "$@"
-

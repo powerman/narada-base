@@ -30,15 +30,7 @@ You usually should edit it to set commands needed to release your project.
 
 Default implementation will generate patch file with differences since
 previous released version for all files in your project repo, except
-these:
-
-----
-.gitignore
-build
-release
-deploy
-migrate
-----
+files listed in `.releaseignore`.
 
 This is suitable only for projects which should deploy their source code
 (for example, projects implemented using Perl scripts).
@@ -66,6 +58,14 @@ your project doesn't use http://testanything.org/[TAP]-compatible tests in
 `t/**/*.t` files.
 
 Run with `-n` to disable deploy-time tests.
+
+=== ./deploy_server [<version>]
+
+You should edit it to set `addr` (SSH account on remote server) and `path`
+(project's directory on remove server) variables.
+
+Default implementation will upload and install/upgrade project on remote
+server using ssh.
 
 === migrate
 
@@ -127,12 +127,13 @@ When you're ready to release current HEAD and tag it as new version you
 should run `./release --major|--minor|--patch|<version>`.
 
 To deploy one of already released versions into `_live/` you can run
-`./deploy <version>`.
+`./deploy [<version>]`.
 
 To deploy some version on remote server copy `.release/*` files related to
 that version into `.release/` subdirectory of project's deploy directory
 on server and then run `narada-install <version>` in project's deploy
-directory on server.
+directory on server. If you're using SSH to access your server then you
+can just run `./deploy_server [<version>]`.
 
 If you'll add TAP-compatible tests into `t/build/` then they'll be
 automatically executed by `./build --test` in work directory. If you'll
@@ -157,7 +158,7 @@ git checkout <to>
 git reset --soft <from>
 ----
 
-Next, modify `migrate` file by removing all `VERSION ...` lines after
+Next, modify `migrate` file by removing all `INSTALL` and `VERSION ...` lines after
 `VERSION <from>` (do not remove this one). You also may need other changes
 to make sure all migrate operations after that line will correctly migrate
 between `<from>` and `<to>`. Then:
@@ -167,7 +168,12 @@ git add migrate
 git commit -m 'combined upgrade <from>-<to>'
 ./release <from>-<to>
 echo -ne 'VERSION <to>\n\n' >> .release/<from>-<to>.migrate
+echo -ne 'VERSION <to>\n\n' >> migrate
 ----
+
+TODO Few more actions are needed to complete this (modified migrate files
+should be added to the repo into the last commit, this modified commit
+should be re-tagged and force-pushed to origin repo).
 
 === Merging different project versions
 
@@ -209,4 +215,3 @@ git commit -m 'merge upgrade <from>-<to>'
 ./release <from>-<to>
 echo -ne 'VERSION <to>\n\n' >> .release/<from>-<to>.migrate
 ----
-
