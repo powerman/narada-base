@@ -5,9 +5,14 @@ test "$1" = '-n' && shift || RUN_TESTS=1
 VERSION=${1:-$(< VERSION)}
 
 #... PUT DEPLOY INSTRUCTION FOR YOUR PROJECT HERE ...
-mkdir -p _live/.release/ &&
-rsync -a .release/ _live/.release/ &&
+find .release -type f -name '*+*' \
+	-not -name "$(cat VERSION).*" \
+	-not -name "$(cat _live/VERSION 2>/dev/null).*" \
+	-delete
+mkdir -p _live &&
+ln -sf ../.release _live/ &&
 cd _live &&
 narada-install --allow-downgrade --allow-restore "$VERSION" &&
-( test -z "$RUN_TESTS" -o ! -d t/devel || prove -r t/devel/ )
-
+if test -n "$RUN_TESTS" -a -d t/devel; then
+	prove -r t/devel/
+fi
