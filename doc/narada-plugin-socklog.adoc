@@ -31,5 +31,3 @@ you should create several subdirectories in `var/log/` with
 `var/log/*/config` files, to define which messages should be stored in
 each log directory, and restart log/log service with
 `sv t ./service/log/log/`.
-
-
