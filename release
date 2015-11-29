@@ -61,7 +61,7 @@ release_migrate() {
 
 release_version() {
 	list_versions "$2" | grep -q -x -F "$1" && return 0
-	echo -ne "\nINSTALL $1\nVERSION $1\n\n" >> "$2"
+	echo -ne "\nINSTALL\nVERSION $1\n\n" >> "$2"
 }
 
 list_versions() {
