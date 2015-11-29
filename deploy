@@ -14,4 +14,5 @@ cd _live &&
 narada-install --allow-downgrade --allow-restore "$VERSION" &&
 if test -n "$RUN_TESTS" -a -d t/devel; then
 	prove -r t/devel/
-fi
+fi &&
+rm -f .backup/*+*
