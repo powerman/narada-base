@@ -209,4 +209,3 @@ git commit -m 'merge upgrade <from>-<to>'
 ./release <from>-<to>
 echo -ne 'VERSION <to>\n\n' >> .release/<from>-<to>.migrate
 ----
-

@@ -242,5 +242,3 @@ add_config mysql/pass
 add_config mysql/dump/empty
 add_config mysql/dump/ignore
 add_config mysql/dump/incremental
-
-

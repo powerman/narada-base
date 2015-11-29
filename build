@@ -59,4 +59,3 @@ generate_VERSION() {
 
 
 main "$@"
-
