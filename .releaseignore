@@ -7,5 +7,6 @@
 build
 release
 deploy
+deploy_server
 migrate
 t/build/.*
