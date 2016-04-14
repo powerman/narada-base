@@ -14,6 +14,10 @@ https://github.com/powerman/narada-plugin-socklog[socklog] plugins,
 for projects which needs to run background services (like fastcgi,
 php-fpm, etc.) and able to use http://smarden.org/runit/[runit]
 
+go:: base files suitable for Go projects
+
+go-socklog:: merged branches go and socklog
+
 doc:: (this branch) doesn't contain base files for Narada, only
 documentation about this repo
 
@@ -24,8 +28,18 @@ This is default repository for Narada, so you can create new Narada
 project using one of these commands:
 
 [source,sh]
+----
 narada-new [directory]
 narada-new -b socklog [directory]
+----
+
+It's also recommended to release new major/minor/patch version immediately
+after creating new project and/or adding new complex plugins (like runit):
+
+[source,sh]
+----
+./release --minor && ./deploy
+----
 
 
 == Upgrade from Narada 1.x
@@ -37,5 +51,3 @@ See https://github.com/powerman/narada-base/wiki#how-to-upgrade-narada-1x-projec
 
 Documentation is in your project's directory, see
 https://github.com/powerman/narada-base/blob/master/doc/narada-base.adoc[doc/narada-base.adoc].
-
-
