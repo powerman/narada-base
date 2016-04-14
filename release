@@ -9,6 +9,7 @@ main() {
 
 	if test $# -eq 1 -a "$1" = '-n'; then
 		shift
+		local test=''
 	else
 		local test='--test'
 	fi

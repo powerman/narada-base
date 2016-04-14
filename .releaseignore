@@ -1,5 +1,7 @@
 # VCS
 [.]gitignore
+[.]travis.yml
+circle.yml
 
 # Narada
 (.*/)?[.]release/.*
@@ -8,5 +10,7 @@ build
 release
 deploy
 deploy_server
+deploy_staging
+deploy_production
 migrate
 t/build/.*
