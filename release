@@ -30,7 +30,9 @@ main() {
 			git commit -m "Release $version"        || die 'Failed'
 		fi
 		git tag -a -m release "$version"                || die 'Failed'
-		# git push --follow-tags                          || die 'Failed'
+		if git branch -vv | grep -q '^\* \S\+\s\+\S\+ \[origin/'; then
+			git push --follow-tags                  || die 'Failed'
+		fi
 	fi
 }
 
