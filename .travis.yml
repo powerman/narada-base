@@ -16,16 +16,10 @@ cache:
     - /home/travis/runit
     - /home/travis/perl5
     - /home/travis/gopath/bin
-    - /home/travis/gopath/pkg/linux_amd64/github.com/axw
-    - /home/travis/gopath/pkg/linux_amd64/github.com/mattn
-    - /home/travis/gopath/pkg/linux_amd64/github.com/pborman
-    - /home/travis/gopath/pkg/linux_amd64/github.com/powerman
-    - /home/travis/gopath/pkg/linux_amd64/golang.org
-    - /home/travis/gopath/pkg/linux_amd64/gopkg.in
+    - /home/travis/gopath/pkg
     - /home/travis/gopath/src/github.com/axw
     - /home/travis/gopath/src/github.com/mattn
     - /home/travis/gopath/src/github.com/pborman
-    - /home/travis/gopath/src/github.com/powerman
     - /home/travis/gopath/src/golang.org
     - /home/travis/gopath/src/gopkg.in
 
