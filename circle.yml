@@ -16,6 +16,7 @@ machine:
 
 dependencies:
   pre:
+    - sudo apt-get install runit socklog
     - curl -L https://cpanmin.us | perl - App::cpanminus
     - cpanm -nq local::lib
     - cpanm -nq CPAN::Meta
@@ -36,4 +37,5 @@ test:
     - cd "$WD" && ./release -f
     - mkdir -p _live/ && ln -nsf ../.release _live/.release
     - cd _live && narada-install "$(cat ../VERSION)" </dev/null
+    - cd _live && narada-start-services & sleep 1
     - cd _live && prove -r t/devel/
