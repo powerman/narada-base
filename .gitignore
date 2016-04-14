@@ -1,3 +1,7 @@
 /.release/*+*
 /_live*/
 /VERSION
+
+# Go binaries
+/bin/
+/t/devel/*.test

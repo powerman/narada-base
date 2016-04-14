@@ -14,3 +14,6 @@ deploy_staging
 deploy_production
 migrate
 t/build/.*
+
+# Go sources
+.*[.]go
