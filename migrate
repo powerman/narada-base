@@ -238,8 +238,8 @@ add_config crontab/backup -
   1 2 * * 1   rm .backup/full.tar >/dev/null 2>&1
 
 add_config log/level    DEBUG
-add_config log/type     file
-add_config log/output   var/log/default.log
+add_config log/type     syslog
+add_config log/output   var/log.sock
 
 
 # OPTIONAL Narada files & directories:
@@ -257,3 +257,25 @@ add_config mysql/dump/ignore
 add_config mysql/dump/incremental
 only_upgrade
   chmod 0600 config/mysql/pass
+
+
+### narada-plugin-runit
+
+# restart service_to_restart
+DEFINE2 restart
+upgrade
+  sv t ./service/"$1" || :
+after_downgrade
+  sv t ./service/"$1" || :
+
+add_config service/type runit
+add_config crontab/service -
+  */1  * * * *    narada-start-services &
+
+exclude_from_backup ./service/*/supervise
+exclude_from_backup ./service/*/log/supervise
+
+
+### narada-plugin-socklog
+
+restart log
