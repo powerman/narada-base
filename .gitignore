@@ -4,4 +4,3 @@
 
 # Go binaries
 /bin/
-/t/devel/*.test
