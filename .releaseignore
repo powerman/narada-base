@@ -14,6 +14,8 @@ deploy_staging
 deploy_production
 migrate
 t/build/.*
+(.*/)?staging.setup
+(.*/)?staging.teardown
 
 # Go sources
 .*[.]go

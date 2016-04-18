@@ -9,31 +9,27 @@ This document describe how to use files provided by this template.
 
 == Setup
 
-=== ./build [-h|--help] [-t|--test] [--race]
+=== ./build [-h|--help] [-t|--test]
 
-You may edit it to set commands used to build and test your project.
+You usually should edit it to set commands used to build and test your
+project.
 
-Default implementation will compile and install Go commands into `bin/`,
-with `-t|--test` will also compile and install tests into
-`t/devel/*.cover.test`, with `--race` will also compile and install tests
-with enabled data race detection into `t/devel/*.race.test`.
+Default implementation will compile and install Go commands into `bin/`.
 
 Also you may need to change commands used to run build-time tests if your
 project doesn't use http://testanything.org/[TAP]-compatible tests in
-`t/**/*.t` files, but provided `t/devel/go.t` is able to run
-`t/devel/*.{cover,race}.test` with TAP-compatible output.
+`t/**/*.t` and/or `bin/*.t` files.
 
-You can set environment variable `$TEST_ONLY` to package name (relative to
-project root) to build tests only for that package.
+Run with `-t|--test` to enable build-time tests.
 
-=== ./release [-h|--help|-n|-f|--major|--minor|--patch|<version>]
+=== ./release [-h|--help|-n|--major|--minor|--patch|<version>]
 
 You usually should edit it to set commands needed to release your project.
 
 Default implementation will generate patch file with differences since
 previous released version for all files in your project repo (except
 files listed in `.releaseignore`) and tgz file with compiled binaries
-(`bin/*` and `t/devel/*.test`).
+(`bin/*`).
 
 Generated files will be saved into `.release/` subdirectory. You can
 remove files you don't need anymore. You can re-generate files for any
@@ -44,10 +40,7 @@ different compiler was used or build date was embedded in generated files
 or generated files was manually changed (this may happens in advanced
 cases when you join two branches of project).
 
-Run with `-n` to disable both build-time tests and building tests.
-
-Run with `-f` to force building tests with enabled data race detection
-(by default they will be built only with `--major|--minor|--patch`).
+Run with `-n` to disable build-time tests.
 
 === ./deploy [-n] [<version>]
 

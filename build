@@ -2,7 +2,6 @@
 
 # Default settings.
 RUN_TESTS=
-TEST_RACE=
 
 main() {
 	parse_params "$@"
@@ -14,17 +13,12 @@ main() {
 parse_params() {
 	while test $# -ge 1; do
 		if test "$1" = "--help" || test "$1" = "-h"; then
-			echo "Usage: $0 [-h|--help] [-t|--test] [--race]"
+			echo "Usage: $0 [-h|--help] [-t|--test]"
 			exit
 		fi
 		if test "$1" = "--test" || test "$1" = "-t"; then
 			shift
 			RUN_TESTS=1
-			continue
-		fi
-		if test "$1" = "--race"; then
-			shift
-			TEST_RACE=1
 			continue
 		fi
 		echo "error: unknown param '$1'" >&2
@@ -34,30 +28,20 @@ parse_params() {
 
 build_project() {
 	#... PUT BUILD INSTRUCTION FOR YOUR PROJECT HERE ...
-	local p t
+	local p
 	for p in $(find bin/ -type f -printf "%f\n"); do
 		test -d "cmd/$p" || rm -f "bin/$p"
 	done
-	rm -f t/devel/*.{cover,race}.test
 	GOBIN=$(pwd)/bin/ go install -v ./... || return 1
-	for p in $(find */ -type f -not -path './_live*' -name '*_test.go' -printf "%h\n" | sort -u); do
-		test -z "$TEST_ONLY" -o "$TEST_ONLY" == "$p" || continue
-		if test -n "$RUN_TESTS"; then
-			t=$(echo "$p" | sed 's!/!.!g;s!\(.*\)!t/devel/\1.cover.test!')
-			echo "$t"
-			go test -v -covermode=count -c -o "$t" "./$p" || return 1
-		fi
-		if test -n "$TEST_RACE"; then
-			t=$(echo "$p" | sed 's!/!.!g;s!\(.*\)!t/devel/\1.race.test!')
-			echo "$t"
-			go test -v -race -c -o "$t" "./$p" || return 1
-		fi
-	done
 }
 
 test_project() {
 	#... PUT TEST INSTRUCTION FOR YOUR PROJECT HERE ...
-	prove -r t/build/
+	prove -r t/build/ || return 1
+	go test -cover ./... || return 1
+	if test -n "$RELEASE_TESTING"; then
+		go test -race ./... || return 1
+	fi
 }
 
 generate_VERSION() {
@@ -76,13 +60,6 @@ generate_VERSION() {
 		git update-index -q --refresh --unmerged >/dev/null
 		if ! git diff-index --quiet HEAD; then
 			v="${v}.${dirty}"
-		fi
-	fi
-	if test -n "$TEST_ONLY"; then
-		if echo "$v" | grep -q '+'; then
-			v="${v}.testonly-$(date +%s)"
-		else
-			v="${v}+testonly-$(date +%s)"
 		fi
 	fi
 	echo "$v" > VERSION

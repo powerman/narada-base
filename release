@@ -4,20 +4,17 @@ die()	{ warn "$@"; exit 1;	}
 
 main() {
 	if test $# -gt 1 -o "$1" = '-h' -o "$1" = '--help'; then
-		die 'Usage: ./release [-h|--help|-n|-f|--major|--minor|--patch|<version>]'
+		die 'Usage: ./release [-h|--help|-n|--major|--minor|--patch|<version>]'
 	fi
 
 	if test $# -eq 1 -a "$1" = '-n'; then
 		shift
 		local test=''
-	elif test $# -eq 1 -a "$1" = '-f'; then
-		shift
-		local test='--test --race'
-	elif test $# -eq 0; then
+	elif test $# -eq 1; then
+		export RELEASE_TESTING=1
 		local test='--test'
 	else
-		unset TEST_ONLY
-		local test='--test --race'
+		local test='--test'
 	fi
 	./build $test   || die 'Please fix the build first, then try again'
 
@@ -59,7 +56,7 @@ release_project() {
                 print "$_\0" if !/\A(?:$skip)\z/ms;
                 ' | xargs -0 -r git diff --binary "$prev_version" -- > .release/$(< VERSION).patch
 	test -s .release/$(< VERSION).patch || rm .release/$(< VERSION).patch
-	GZIP=-1 tar czf .release/$(< VERSION).tgz bin/ $(find t/devel/ -name '*.test')
+	test ! -d bin/ || GZIP=-1 tar czf .release/$(< VERSION).tgz bin/
 }
 
 release_migrate() {
