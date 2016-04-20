@@ -31,4 +31,4 @@ script:
   - RELEASE_TESTING=1 ./release
   - mkdir _live/ && ln -s ../.release _live/.release && cd _live/
   - narada-install "$(cat ../VERSION)" </dev/null
-  - prove -r t/devel/
+  - prove -r
