@@ -38,4 +38,4 @@ test:
     - mkdir -p _live/ && ln -nsf ../.release _live/.release
     - cd _live && narada-install "$(cat ../VERSION)" </dev/null
     - cd _live && narada-start-services & sleep 1
-    - cd _live && prove -r t/devel/
+    - cd _live && prove -r

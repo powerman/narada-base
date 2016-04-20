@@ -39,4 +39,4 @@ script:
   - mkdir _live/ && ln -s ../.release _live/.release && cd _live/
   - narada-install "$(cat ../VERSION)" </dev/null
   - narada-start-services & sleep 1
-  - prove -r t/devel/
+  - prove -r
