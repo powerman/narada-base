@@ -8,7 +8,7 @@ main() {
 	local v="${1:-$(< VERSION)}"
 	list_versions | grep -q -x -F "$v"      || die "Version '$v' is not released yet"
 
-	rsync -avz --size-only $(git ls-files .release/) "${addr}:${path}/.release/" &&
+	rsync -avzR --size-only $(git ls-files .release/) "${addr}:${path}" &&
 	ssh -o RequestTTY=yes "$addr" bash -l -c \' "set -x; cd '$path' && narada-install '$v'" \'
 }
 
